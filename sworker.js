@@ -1,8 +1,8 @@
 const CACHE_NAME = 'proyectos-pwa-v4';
 const PRECACHE_URLS = [
   './',
-  './inicioGGresp.html?homescreen=v2',
-  './inicioGGresp.html',
+  './index.html?homescreen=v2',
+  './index.html',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
