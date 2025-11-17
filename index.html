@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="UTF-8">
+    <meta name="theme-color" content="#0d6efd" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario</title>
+    <link rel="manifest" href="manifest.webmanifest"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="icon" href="./icons/icon-192.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    
+    <style>
+        
+        .thumb { height: 70px; object-fit: cover; border-radius: .35rem;}
+        .thumbs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem;}
+        #btnInstall {
+        /* Estilos para el boton Instalar App */
+        position: fixed; right: 16px; bottom: 16px;
+        padding: 12px 16px; border: 0; border-radius: 10px;
+        background: #122C4F; color: white; font-size: 14px; cursor: pointer;
+        box-shadow: 0 6px 18px rgba(0,0,0,.2); z-index: 9999;
+        }
+        
+        #btnInstall[hidden] { display: none; }
+        /* Estilos para el encabezado */
+        :root {
+            --primary-blue: #122C4F;
+            --cream-bg: #ffffff;
+            --dark-text: #ffffff;
+        }
+
+        .navbar {
+            background-color: #122C4F;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--dark-text) !important;
+        }
+
+        .nav-link {
+            color: var(--dark-text) !important;
+            margin: 0 1rem;
+            font-weight: 500;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #255ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
+        }
+
+        .btn-danger {
+            border: 2px solid #891521;
+            background-color: #891521;
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-left: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: #DC3545;
+            border: 2px solid #DC3545;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-danger {
+            border: 2px solid #DC3545;
+            color: #DC3545;
+            background-color: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-left: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #DC3545;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-box {
+            width: 120px;
+            height: 120px;
+            border: 3px solid var(--primary-blue);
+            border-radius: 12px;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-card .card-header {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+        }
+
+        .modal-header {
+            background-color: var(--primary-blue);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #CED4DA;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+    </style>
+</head>
+<body class="bg-light">
+    <!--Navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #122C4F;">
+        <div class="container-fluid">
+            <a href="inicioGG.html">
+                <img src="./icons/icon-512.png" alt="LogoGadget-Go" width="100">
+            </a>
+            <h2 class="px-5 text-white" style="color: #122C4F; font-weight: 700;">Inventario</h2>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav"> <!--Enlaces de los apartados (Inicio, Inventario, Productos)-->
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="inicioGGresp.html" style="font-size: 1.2rem;">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#productos" style="font-size: 1.2rem;">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html" style="font-size: 1.2rem;">Inventario</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header id="inicio" class="text-center py-5" style="background-color: #FBF9E4;">
+        <div class="container"></div>
+    </header>
+    
+    <section class="py-5 mb-4" style="background-color: #FBF9E4;">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h3 class="display-1 mb-3" style="color: #122C4F; font-weight: 400;"><strong>Gestion de Productos</strong></h3>
+                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#proyectoModal" >
+                    Registrar Nuevo Producto
+                </button>
+                <button id="clearAll" class="btn btn-danger btn-lg ms-2">
+                    Limpiar todo
+                </button>
+            </div>
+            <!--Contenedor para mostrar los productos-->
+            <div id="productsContainer" class="row mt-4 py-5"></div>
+        </div>
+    </section>
+    <!--Formulario de los productos-->
+    <div class="modal fade" id="proyectoModal" tabindex="-1" aria-labelledby="proyectoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header text-white">
+                    <h5 class="modal-title" id="proyectoModalLabel">
+                        Registro de Nuevo Producto
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4"> <!--Formulario para registrar el producto-->
+                    <form id="productoForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="nombreProducto" class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" id="nombreProducto" placeholder="Ej: Cargador Tipo C..." required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="categoria" class="form-label">Categoria *</label>
+                                <select class="form-select" id="categoria" required>
+                                    <option value="">Seleccionar categoria</option>
+                                    <option value="cel">Celulares</option>
+                                    <option value="computadoras">Equipos de Computo</option>
+                                    <option value="laptops">Laptops</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="modProducto" class="form-label">Modelo *</label>
+                                <input type="text" class="form-control" id="modProducto" placeholder="Ej: Teclado Razer, Samsung S22, Mouse Logitech g502" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="claveProducto" class="form-label">Clave *</label>
+                                <input type="text" class="form-control" id="claveProducto" placeholder="Ej: SMS-4214" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="precioProd" class="form-label">Precio *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="precioProd" placeholder="0.00" step="0.01" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="stockProd" class="form-label">Stock *</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="stockProd" placeholder="0" step="1">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="estadoProducto" class="form-label">Estado *</label>
+                                <select class="form-select" id="estadoProducto" required>
+                                    <option value="">Seleccionar estado</option>
+                                    <option value="nuevo">Nuevo</option>
+                                    <option value="usado-comoNuevo">Usado (Como nuevo)</option>
+                                    <option value="usado-buenEstado">Usado (Buen estado)</option>
+                                </select>
+                            </div>
+                            <div class="col-12" >
+                                <label for="descripcion" class="form-label">Características</label>
+                                <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripcion del Producto"></textarea>
+                            </div>
+                            <!--Modificacion: Subir una o varias imagenes-->
+                            <div class="col-12">
+                                <label for="imagenes" class="form-label">Imagenes del Producto</label>
+                                <input type="file" id="imagenes" class="form-control" accept="image/*" multiple />
+                                <div class="form-text">Maximo 3 imagenes del producto (peso máximo: 5 MB, Tamaño máximo: 512x512)</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <!--Botones para cancelar y guardar-->
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" form="productoForm" class="btn btn-primary">
+                        Guardar Producto
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+        let productos = [];
+
+        const LS_KEY = 'productos';
+
+        //Inicialiazar modal de Bootstrap
+        const modal = new bootstrap.Modal(document.getElementById('proyectoModal'));
+
+        //Esta funcion es para guardar  los proyectos en el localStorage
+        function saveToLS() {
+            localStorage.setItem(LS_KEY, JSON.stringify(productos));
+        }
+
+        //funcion para recuperar los proyectos del local storage
+        function loadFromLS() {
+            try {
+                const raw = localStorage.getItem(LS_KEY);
+                productos = raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                console.warn('LocalStorage corrupto, se reinicia.', e);
+                productos = [];
+                localStorage.removeItem(LS_KEY);
+            }
+        }
+
+        //Formatear numero a moneda MXN
+        function currencyMX(n) {
+            return Number(n).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        //Leer multiples archivos como Data URL
+        function readFilesAsDataURLs(fileList) {
+            const files = Array.from(fileList || []);
+            const readers = files.map (
+                (file) =>
+                    new Promise((resolve, reject) => {
+                        const fr = new FileReader();
+                        fr.onload = () => resolve({name: file.name, type: file.type, dataURL: fr.result });
+                        fr.onerror = reject;
+                        fr.readAsDataURL(file);
+                    })
+                );
+            return Promise.all(readers);
+        }
+
+        //Render de tarjetas
+        function renderProducts() {
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = '';
+
+
+            const estadoClasses = {
+                'usado-comoNuevo': 'info',
+                'usado-buenEstado': 'primary',
+                'sin-stock': 'warning',
+                nuevo: 'success'
+            };
+            
+            const estadoTexto = {
+                'usado-comoNuevo': 'Usado (Como nuevo)',
+                'usado-buenEstado': 'Usado (Buen estado)',
+                'sin-stock': 'Sin Stock',
+                nuevo: 'Nuevo'
+            };
+
+            const estadoCategorias = {
+                'cel' : 'Celulares',
+                'computadoras' : 'Equipos de Computo',
+                'laptops' : 'Laptops',
+            }
+
+            //Recorrer y crear tarjetas por producto
+            productos.forEach((producto, idx) => {  
+                const col = document.createElement('div');
+                col.className = 'col-md-6 col-lg-4 mb-4';
+
+                const thumbs = (producto.imagenes || []).slice(0, 3) //mostrar hasta 3 miniaturas
+                    .map((img) => `<img class="thumb w-100" src="${img.dataURL}" alt="${producto.nombre}" />`)
+                    .join('');
+
+                const extraCount = (producto.imagenes?.length || 0) - 3;
+                const extraBadge = extraCount > 0 ? `<span class="badge bg-secondary">+${extraCount} mas</span>` : '';
+
+                //Informacion sobre el producto agregado
+                col.innerHTML = `
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header text-white d-flex align-items-center justify-content-between" style="background-color: #122C4F;">
+                            <h5 class="card-title mb-0">${producto.nombre}</h5>
+                            <button class="btn btn-sm btn-light" data-action="delete" data-index="${idx}" title="Eliminar">
+                                <i class="fa-solid fa-trash-can" data-action="delete" data-index="${idx}" title="Eliminar"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text mb-2">
+                                <strong>Nombre:</strong> ${producto.nombre}<br />
+                                <strong>Categoria:</strong> ${producto.categoria} <br />
+                                <strong>Modelo:</strong> ${producto.modelo} <br />
+                                <strong>Clave:</strong> ${producto.clave}<br />
+                                <strong>Precio:</strong> $${currencyMX(producto.precio)}<br />
+                                <strong>Stock:</strong> ${producto.stock} piezas
+                            </p>
+                            ${producto.descripcion ? `<p class="card-text text-muted"><small>${producto.descripcion}</small></p>` : ''}
+                            ${producto.imagenes && producto.imagenes.length
+                                ? `<div class="thumbs-grid mt-2">${thumbs}</div>${extraBadge ? `<div class="mt-2">${extraBadge}</div>` : ''} `
+                                : '<div class="text-muted"><em>Sin imagenes</em><div>'}
+                            </div>
+                            <div class="card-footer">
+                                <span class="badge bg-${estadoClasses[producto.estado]} w-100">${estadoTexto[producto.estado]}</span>
+                                
+                            </div>
+                        </div>`;
+
+                    container.appendChild(col);
+            });
+
+            //Funcion es para eliminar productos
+            container.querySelectorAll('[data-action="delete"]').forEach((btn) =>{
+                btn.addEventListener('click', (e) => {
+                    const i = Number(e.currentTarget.getAttribute('data-index'));
+                    productos.splice(i, 1);
+                    saveToLS();
+                    renderProducts();
+                });
+            });
+        }
+
+        //Toast Helper al subir Producto
+        function showToast(msg, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast align-items-center text-bg-' + (type === 'success' ? 'success' : 'danger') + ' position-fixed top-0 end-0 m-3';
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">${msg}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>`;
+                document.body.appendChild(toast);
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+                setTimeout(() => toast.remove(), 3500);
+        }
+
+        //Submit del formulario con lectura de imagenes
+        document.getElementById('productoForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const imagenesInput = document.getElementById('imagenes');
+            let imagenes = [];
+            try {
+                imagenes = await readFilesAsDataURLs(imagenesInput.files);
+            } catch (err) {
+                console.error('Error leyendo imagenes', err);
+                showToast('Hubo un problema leyendo las imagenes', 'error');
+            }
+        
+            //Crear objeto producto
+            const producto = {
+                id: crypto.randomUUID(),
+                nombre: document.getElementById('nombreProducto').value,
+                categoria: document.getElementById('categoria').value,
+                modelo: document.getElementById('modProducto').value,
+                clave: document.getElementById('claveProducto').value,
+                precio: parseFloat(document.getElementById('precioProd').value),
+                estado: document.getElementById('estadoProducto').value,
+                stock: document.getElementById('stockProd').value,
+                descripcion: document.getElementById('descripcion').value,
+                imagenes, // [{name, type, dataURL}, ...]
+            };
+            productos.push(producto);
+            saveToLS();
+            renderProducts();
+            //Limpiar y cerrar
+            this.reset();
+            modal.hide();
+            showToast('Producto guardado correctamente');
+        });
+
+        //Cargar al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromLS();
+            renderProducts();
+
+            //Limpiar todo el local storage
+            document.getElementById('clearAll').addEventListener('click', () => {
+                if (confirm('¿Seguro que deseas borrar todos los productos guardados en este navegador?')) {
+                    productos = [];
+                    saveToLS();
+                    renderProducts();
+                    showToast('LocalStorage limpiado');
+                }
+            });
+        });
+        </script>
+    </body>
+</html>
